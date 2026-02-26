@@ -3,7 +3,8 @@
 <head>
   <title>Balloon Therapy – Stroke Rehab</title>
 
-  <script src="./mediapipe/hands.js"></script>
+  <!-- ✅ Use MediaPipe CDN -->
+  <script src="https://cdn.jsdelivr.net/npm/@mediapipe/hands/hands.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/@mediapipe/camera_utils/camera_utils.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/@mediapipe/drawing_utils/drawing_utils.js"></script>
 
@@ -79,7 +80,6 @@ let balloons = [];
 let score = 0;
 let time = 60;
 
-// Create balloon objects
 function createBalloon() {
   balloons.push({
     x: Math.random() * canvas.width,
@@ -88,17 +88,15 @@ function createBalloon() {
   });
 }
 
-// Initial balloons
 for (let i = 0; i < 6; i++) createBalloon();
 
-// Draw balloon images
 function drawBalloons() {
   balloons.forEach(b => {
     ctx.drawImage(balloonImg, b.x, b.y, b.size, b.size);
   });
 }
 
-// Timer
+/* Timer */
 setInterval(() => {
   time--;
   document.getElementById("timer").innerText = "Time: " + time;
@@ -109,20 +107,19 @@ setInterval(() => {
   }
 }, 1000);
 
-
 /* ---------- MEDIAPIPE ---------- */
 
 const hands = new Hands({
   locateFile: (file) => {
-    return `./mediapipe/${file}`;
+    return `https://cdn.jsdelivr.net/npm/@mediapipe/hands/${file}`;
   }
 });
 
 hands.setOptions({
   maxNumHands: 1,
-  modelComplexity: 1,
-  minDetectionConfidence: 0.5,
-  minTrackingConfidence: 0.5
+  modelComplexity: 0, // faster
+  minDetectionConfidence: 0.6,
+  minTrackingConfidence: 0.6
 });
 
 hands.onResults(results => {
@@ -140,11 +137,11 @@ hands.onResults(results => {
 
     /* 🔴 Finger pointer */
     ctx.beginPath();
-    ctx.arc(x, y, 10, 0, 2 * Math.PI);
+    ctx.arc(x, y, 12, 0, 2 * Math.PI);
     ctx.fillStyle = "red";
     ctx.fill();
 
-    /* 💥 Collision with balloon image */
+    /* 💥 Collision */
     balloons.forEach((b, i) => {
       if (
         x > b.x &&
@@ -161,7 +158,6 @@ hands.onResults(results => {
   }
 });
 
-
 /* ---------- CAMERA ---------- */
 
 const camera = new Camera(video, {
@@ -173,7 +169,6 @@ const camera = new Camera(video, {
 });
 
 camera.start();
-
 </script>
 
 </body>
