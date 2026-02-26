@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Grip Therapy</title>
+
+  <!-- ✅ Use CDN MediaPipe -->
+  <script src="https://cdn.jsdelivr.net/npm/@mediapipe/hands/hands.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@mediapipe/camera_utils/camera_utils.js"></script>
+
+  <style>
+    body{margin:0;background:#020617;}
+    video{position:absolute;width:100%;height:100%;object-fit:cover;transform:scaleX(-1);}
+    canvas{position:absolute;transform:scaleX(-1);}
+  </style>
+</head>
+
+<body>
+
+<video id="video" autoplay></video>
+<canvas id="canvas"></canvas>
+
+<script>
+const video = document.getElementById("video");
+const canvas = document.getElementById("canvas");
+const ctx = canvas.getContext("2d");
+
+canvas.width = window.innerWidth;
+canvas.height = window.innerHeight;
+
+/* 🍎 Objects */
+let objects = [];
+
+function createObject(){
+  objects.push({
+    x: Math.random()*canvas.width,
+    y: Math.random()*canvas.height,
+    size: 50
+  });
+}
+
+for(let i=0;i<5;i++) createObject();
+
+function drawObjects(){
+  objects.forEach(o=>{
+    ctx.beginPath();
+    ctx.arc(o.x,o.y,o.size,0,2*Math.PI);
+    ctx.fillStyle="orange";
+    ctx.fill();
+  });
+}
+
+/* ---------- MEDIAPIPE ---------- */
+
+const hands = new Hands({
+  locateFile: (file) => {
+    return `https://cdn.jsdelivr.net/npm/@mediapipe/hands/${file}`;
+  }
+});
+
+hands.setOptions({
+  maxNumHands: 2,
+  modelComplexity: 0, // faster
+  minDetectionConfidence: 0.6,
+  minTrackingConfidence: 0.6
+});
+
+hands.onResults(results=>{
+
+  ctx.clearRect(0,0,canvas.width,canvas.height);
+  drawObjects();
+
+  // ✅ FIX: safe check
+  if(results.multiHandLandmarks && results.multiHandLandmarks.length>0){
+
+    const hand = results.multiHandLandmarks[0];
+
+    const thumb = hand[4];
+    const index = hand[8];
+
+    const tx = thumb.x*canvas.width;
+    const ty = thumb.y*canvas.height;
+
+    const ix = index.x*canvas.width;
+    const iy = index.y*canvas.height;
+
+    /* ✊ Grip detection */
+    const dist = Math.hypot(tx-ix, ty-iy);
+
+    /* Finger pointer */
+    ctx.beginPath();
+    ctx.arc(ix,iy,12,0,2*Math.PI);
+    ctx.fillStyle="red";
+    ctx.fill();
+
+    /* Visual grip feedback */
+    ctx.font = "30px Arial";
+    ctx.fillStyle = dist < 40 ? "lime" : "white";
+    ctx.fillText(dist < 40 ? "GRIP" : "OPEN", 50, 50);
+
+    if(dist < 40){  
+
+      objects.forEach((o,i)=>{
+        if(ix>o.x-o.size && ix<o.x+o.size &&
+           iy>o.y-o.size && iy<o.y+o.size){
+
+          objects.splice(i,1);
+          createObject();
+        }
+      });
+    }
+  }
+});
+
+/* ---------- CAMERA ---------- */
+
+const camera = new Camera(video,{
+  onFrame: async()=>await hands.send({image:video}),
+  width:1280,
+  height:720
+});
+
+camera.start();
+</script>
+
+</body>
+</html>

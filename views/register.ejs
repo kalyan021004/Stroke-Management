@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+
+<html>
+
+<head>
+    <title>Register – AI Stroke Rehab</title>
+    <style>
+        body {
+            margin: 0;
+            font-family: Arial;
+            background: linear-gradient(120deg, #0f172a, #1e3a8a);
+            height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+
+        .card {
+            background: white;
+            padding: 30px;
+            width: 350px;
+            border-radius: 12px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+            text-align: center;
+        }
+
+        h2 {
+            margin-bottom: 20px;
+            color: #1e3a8a;
+        }
+
+        input,
+        select {
+            width: 100%;
+            padding: 10px;
+            margin: 8px 0;
+            border-radius: 8px;
+            border: 1px solid #ddd;
+        }
+
+        button {
+            width: 100%;
+            padding: 10px;
+            border: none;
+            background: #1e3a8a;
+            color: white;
+            font-weight: bold;
+            border-radius: 8px;
+            cursor: pointer;
+        }
+
+        button:hover {
+            background: #2563eb;
+        }
+
+        a {
+            text-decoration: none;
+            color: #1e3a8a;
+            font-size: 14px;
+        }
+
+        
+    </style>
+</head>
+
+<body>
+
+    <div class="card">
+        <h2>Create Account</h2>
+
+        <form method="POST" action="/register">
+
+            ```
+            <input name="name" placeholder="Full Name" required>
+
+            <input name="email" type="email" placeholder="Email" required>
+
+            <input name="password" type="password" placeholder="Password" required>
+
+            <!-- Stroke specific data -->
+            <select name="strokeType">
+                <option>Ischemic Stroke</option>
+                <option>Hemorrhagic Stroke</option>
+                <option>Other</option>
+            </select>
+
+            <select name="affectedSide">
+                <option>Left Side</option>
+                <option>Right Side</option>
+                <option>Both</option>
+            </select>
+
+            <button>Register</button>
+            ```
+
+        </form>
+
+        <p>Already registered? <a href="/">Login</a></p>
+    </div>
+
+</body>
+
+</html>

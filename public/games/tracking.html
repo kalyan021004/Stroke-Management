@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Tracking Therapy</title>
+  <script src="https://cdn.jsdelivr.net/npm/@mediapipe/hands/hands.js"></script>
+
+  <script src="https://cdn.jsdelivr.net/npm/@mediapipe/camera_utils/camera_utils.js"></script>
+
+  <style>
+    body{margin:0;background:#020617;color:white;}
+    video{position:absolute;width:100%;height:100%;object-fit:cover;transform:scaleX(-1);}
+    canvas{position:absolute;transform:scaleX(-1);}
+  </style>
+</head>
+
+<body>
+
+<video id="video" autoplay></video>
+<canvas id="canvas"></canvas>
+
+<script>
+const video = document.getElementById("video");
+const canvas = document.getElementById("canvas");
+const ctx = canvas.getContext("2d");
+
+canvas.width = window.innerWidth;
+canvas.height = window.innerHeight;
+
+/* 🎯 Moving target */
+let target = {
+  x: 100,
+  y: 100,
+  dx: 4,
+  dy: 3,
+  size: 40
+};
+
+let score = 0;
+
+/* ---------- GAME ---------- */
+function moveTarget() {
+  target.x += target.dx;
+  target.y += target.dy;
+
+  if (target.x < 0 || target.x > canvas.width) target.dx *= -1;
+  if (target.y < 0 || target.y > canvas.height) target.dy *= -1;
+}
+
+function drawTarget() {
+  ctx.beginPath();
+  ctx.arc(target.x, target.y, target.size, 0, 2*Math.PI);
+  ctx.fillStyle = "cyan";
+  ctx.fill();
+}
+
+/* ---------- MEDIAPIPE ---------- */
+
+const hands = new Hands({
+  locateFile: (file) => {
+  return `https://cdn.jsdelivr.net/npm/@mediapipe/hands/${file}`;
+}
+});
+
+hands.setOptions({
+  maxNumHands: 1,
+  modelComplexity: 0, // faster
+  minDetectionConfidence: 0.6,
+  minTrackingConfidence: 0.6
+});
+
+hands.onResults(results => {
+
+  ctx.clearRect(0,0,canvas.width,canvas.height);
+
+  moveTarget();
+  drawTarget();
+
+  if (results.multiHandLandmarks.length > 0) {
+    const hand = results.multiHandLandmarks[0];
+    const index = hand[8];
+
+    const x = index.x * canvas.width;
+    const y = index.y * canvas.height;
+
+    ctx.beginPath();
+    ctx.arc(x,y,10,0,2*Math.PI);
+    ctx.fillStyle="red";
+    ctx.fill();
+
+    /* 🎯 Tracking score */
+    const dist = Math.hypot(x-target.x, y-target.y);
+
+    if (dist < target.size) {
+      score++;
+      target.size = 40 + Math.random()*30;
+    }
+  }
+});
+
+/* ---------- CAMERA ---------- */
+const camera = new Camera(video, {
+  onFrame: async () => await hands.send({image: video})
+});
+
+camera.start();
+</script>
+</body>
+</html>
