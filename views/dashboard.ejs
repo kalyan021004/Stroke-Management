@@ -1,6 +1,89 @@
-<h2>Rehab Games</h2>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Rehab Dashboard</title>
 
-<a href="/game/play/balloon">Balloon Therapy</a><br>
-<a href="/game/play/tracking">Hand Tracking</a><br>
-<a href="/game/play/grip">Grip Therapy</a><br>
+<style>
+*{
+  margin:0;
+  padding:0;
+  box-sizing:border-box;
+  font-family: 'Segoe UI', sans-serif;
+}
 
+body{
+  height:100vh;
+  background: linear-gradient(120deg,#0f2027,#203a43,#2c5364);
+  display:flex;
+  justify-content:center;
+  align-items:center;
+}
+
+/* Dashboard container */
+.dashboard{
+  background: rgba(255,255,255,0.1);
+  backdrop-filter: blur(12px);
+  padding:40px;
+  border-radius:20px;
+  width:420px;
+  text-align:center;
+  box-shadow:0 15px 35px rgba(0,0,0,0.4);
+}
+
+/* Heading */
+.dashboard h2{
+  color:white;
+  margin-bottom:30px;
+  letter-spacing:1px;
+}
+
+/* Game cards */
+.games{
+  display:flex;
+  flex-direction:column;
+  gap:18px;
+}
+
+.game-card{
+  text-decoration:none;
+  color:white;
+  padding:16px;
+  border-radius:12px;
+  background:linear-gradient(45deg,#ff7e5f,#feb47b);
+  font-size:18px;
+  font-weight:600;
+  transition:0.3s;
+  box-shadow:0 5px 15px rgba(0,0,0,0.3);
+}
+
+/* Different colors for each */
+.game-card:nth-child(2){
+  background:linear-gradient(45deg,#36d1dc,#5b86e5);
+}
+.game-card:nth-child(3){
+  background:linear-gradient(45deg,#00b09b,#96c93d);
+}
+
+/* Hover animation */
+.game-card:hover{
+  transform:translateY(-5px) scale(1.03);
+  box-shadow:0 10px 25px rgba(0,0,0,0.5);
+}
+</style>
+</head>
+
+<body>
+
+<div class="dashboard">
+  <h2>Rehab Games</h2>
+
+  <div class="games">
+    <a class="game-card" href="/game/play/balloon">🎈 Balloon Therapy</a>
+    <a class="game-card" href="/game/play/tracking">✋ Hand Tracking</a>
+    <a class="game-card" href="/game/play/grip">💪 Grip Therapy</a>
+  </div>
+</div>
+
+</body>
+</html>

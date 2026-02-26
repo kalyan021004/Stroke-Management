@@ -1,3 +1,94 @@
-<h2>Game: <%= game %></h2>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Rehab Game</title>
 
-<iframe src="/games/<%= game %>.html" width="100%" height="600"></iframe>
+<style>
+*{
+  margin:0;
+  padding:0;
+  box-sizing:border-box;
+  font-family:'Segoe UI', sans-serif;
+}
+
+body{
+  min-height:100vh;
+  background:linear-gradient(120deg,#0f2027,#203a43,#2c5364);
+  display:flex;
+  justify-content:center;
+  align-items:center;
+}
+
+/* Container */
+.game-container{
+  width:90%;
+  max-width:1100px;
+  background:rgba(255,255,255,0.1);
+  backdrop-filter:blur(12px);
+  border-radius:20px;
+  padding:25px;
+  box-shadow:0 15px 35px rgba(0,0,0,0.4);
+}
+
+/* Header */
+.header{
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  margin-bottom:20px;
+}
+
+.header h2{
+  color:white;
+  letter-spacing:1px;
+}
+
+/* Back button */
+.back-btn{
+  text-decoration:none;
+  padding:10px 18px;
+  border-radius:10px;
+  background:linear-gradient(45deg,#ff7e5f,#feb47b);
+  color:white;
+  font-weight:600;
+  transition:0.3s;
+}
+
+.back-btn:hover{
+  transform:scale(1.05);
+}
+
+/* Iframe wrapper */
+.game-frame{
+  width:100%;
+  border-radius:15px;
+  overflow:hidden;
+  border:2px solid rgba(255,255,255,0.2);
+}
+
+iframe{
+  width:100%;
+  height:600px;
+  border:none;
+}
+</style>
+</head>
+
+<body>
+
+<div class="game-container">
+
+  <div class="header">
+    <h2>Game: <%= game %></h2>
+    <a href="/" class="back-btn">⬅ Back</a>
+  </div>
+
+  <div class="game-frame">
+    <iframe src="/games/<%= game %>.html"></iframe>
+  </div>
+
+</div>
+
+</body>
+</html>
